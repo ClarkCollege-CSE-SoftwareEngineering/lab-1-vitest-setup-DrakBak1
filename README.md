@@ -1,6 +1,7 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/TaS1d2WK)
 # Lab 1: Vitest Setup from Scratch
-**Week 1 | Testing I**
+
+## Week 1 | Testing I
 
 ## Overview
 
@@ -10,7 +11,7 @@ In this lab, you'll set up a complete testing environment from scratch using [Vi
 
 **Prerequisites:** [Node.js](https://nodejs.org/en/download/current) 20+ installed, [VS Code](https://code.visualstudio.com/download), basic TypeScript familiarity
 
-> [!IMPORTANT]
+> [!IMPORTANT]  
 > **Windows Users:** This lab uses terminal commands written for Unix-based systems (macOS/Linux). If you're on Windows, use [PowerShell](https://microsoft.com/powershell) (not Command Prompt) for the best compatibility. Most commands will work identically. Where commands differ, both versions are provided.
 
 ## Learning Objectives
@@ -35,16 +36,28 @@ This lab directly applies concepts from your Week 1 readings:
 
 ## Part 1: Project Setup (20 minutes)
 
-### Step 1.1: Create the Project Directory
+### Step 1.1: Clone Your Repository
 
-Open your terminal and create a new project:
+After accepting the GitHub Classroom assignment, you'll have a personal repository. Clone it to your local machine:
 
 ```bash
-mkdir vitest-lab
-cd vitest-lab
+git clone git@github.com:ClarkCollege-CSE-SoftwareEngineering/cse325-lab1-vitest-setup-YOURUSERNAME.git
+cd cse325-lab1-vitest-setup-YOURUSERNAME
 ```
 
+> [!NOTE]
+> Replace `YOURUSERNAME` with your actual GitHub username. You can copy the exact clone URL from your repository page on GitHub.
+
+Your cloned repository already contains:
+
+- `README.md` -- These lab instructions
+- `.gitignore` -- Pre-configured to ignore `node_modules/`, `dist/`, `coverage/`, etc.
+- `.github/workflows/test.yml` -- GitHub Actions workflow for automated testing
+
 ### Step 1.2: Initialize the Node.js Project
+
+> [!WARNING]
+> The [`npm-init`](https://docs.npmjs.com/cli/v8/commands/npm-init) command below must be run within the root directory of your project (i.e., `cse325-lab1-vitest-setup-YOURUSERNAME` directory). These instructions assumed you ran the `cd cse325-lab1-vitest-setup-YOURUSERNAME` command (shown above), so that your working directory is the root of your project.
 
 ```bash
 npm init -y
@@ -52,16 +65,23 @@ npm init -y
 
 This creates a `package.json` file. Open it and update it to enable ES modules:
 
-```json
+```diff
 {
-  "name": "vitest-lab",
+  "name": "cse325-lab1-vitest-setup-YOURUSERNAME",
   "version": "1.0.0",
-  "type": "module",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "test": "vitest",
-    "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
-  }
+-   "test": "echo \"Error: no test specified\" && exit 1"
++   "test": "vitest",
++   "test:run": "vitest run",
++   "test:coverage": "vitest run --coverage"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+- "type": "commonjs"
++ "type": "module"
 }
 ```
 
@@ -102,19 +122,19 @@ Create a `tsconfig.json` file:
 Create a `vitest.config.ts` file in your project root:
 
 ```typescript
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
     globals: true,
-    environment: 'node',
-    include: ['src/**/*.{test,spec}.{js,ts}'],
+    environment: "node",
+    include: ["src/**/*.{test,spec}.{js,ts}"],
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'html'],
-      exclude: ['node_modules/', 'vitest.config.ts']
-    }
-  }
+      provider: "v8",
+      reporter: ["text", "html"],
+      exclude: ["node_modules/", "vitest.config.ts"],
+    },
+  },
 });
 ```
 
@@ -132,18 +152,23 @@ mkdir src\services
 
 Your project structure should now look like this:
 
-```
-vitest-lab/
+```text
+cse325-lab1-vitest-setup-YOURUSERNAME/
+├── .github/
+│   └── workflows/
+│       └── test.yml        ← (provided in template)
+├── .gitignore              ← (provided in template)
 ├── node_modules/
 ├── src/
 │   ├── utils/
 │   └── services/
-├── package.json
-├── tsconfig.json
-└── vitest.config.ts
+├── package.json            ← (you created this)
+├── README.md               ← (provided in template)
+├── tsconfig.json           ← (you created this)
+└── vitest.config.ts        ← (you created this)
 ```
 
-**✅ Checkpoint:** Run `npm test` — it should start Vitest in watch mode (press `q` to quit). You'll see "No test files found" which is expected.
+**✅ Checkpoint:** Run `npm test` — it should start Vitest in watch mode (press `q` to quit). You'll see _"No test files found"_ which is expected.
 
 ---
 
@@ -168,7 +193,7 @@ export function multiply(a: number, b: number): number {
 
 export function divide(a: number, b: number): number {
   if (b === 0) {
-    throw new Error('Cannot divide by zero');
+    throw new Error("Cannot divide by zero");
   }
   return a / b;
 }
@@ -179,12 +204,12 @@ export function divide(a: number, b: number): number {
 Create `src/utils/math.test.ts`:
 
 ```typescript
-import { describe, it, expect } from 'vitest';
-import { add, multiply, divide } from './math';
+import { describe, it, expect } from "vitest";
+import { add, multiply, divide } from "./math";
 
-describe('math utilities', () => {
-  describe('add', () => {
-    it('adds two positive numbers', () => {
+describe("math utilities", () => {
+  describe("add", () => {
+    it("adds two positive numbers", () => {
       // Arrange
       const a = 2;
       const b = 3;
@@ -196,32 +221,32 @@ describe('math utilities', () => {
       expect(result).toBe(5);
     });
 
-    it('adds negative numbers', () => {
+    it("adds negative numbers", () => {
       expect(add(-1, -1)).toBe(-2);
     });
 
-    it('adds zero', () => {
+    it("adds zero", () => {
       expect(add(5, 0)).toBe(5);
     });
   });
 
-  describe('multiply', () => {
-    it('multiplies two numbers', () => {
+  describe("multiply", () => {
+    it("multiplies two numbers", () => {
       expect(multiply(3, 4)).toBe(12);
     });
 
-    it('returns zero when multiplied by zero', () => {
+    it("returns zero when multiplied by zero", () => {
       expect(multiply(5, 0)).toBe(0);
     });
   });
 
-  describe('divide', () => {
-    it('divides two numbers', () => {
+  describe("divide", () => {
+    it("divides two numbers", () => {
       expect(divide(10, 2)).toBe(5);
     });
 
-    it('throws an error when dividing by zero', () => {
-      expect(() => divide(10, 0)).toThrow('Cannot divide by zero');
+    it("throws an error when dividing by zero", () => {
+      expect(() => divide(10, 0)).toThrow("Cannot divide by zero");
     });
   });
 });
@@ -239,7 +264,7 @@ You should see all tests passing. Notice the structure:
 - `it()` defines individual test cases
 - `expect()` makes assertions
 
-**🤔 Reflection Question:** Look at the `add` tests. The first test uses explicit Arrange-Act-Assert comments. Why might this pattern be useful, especially for complex tests?
+**🤔 Reflection Question:** Look at the `add` tests. The first test uses explicit _Arrange-Act-Assert_ comments. Why might this pattern be useful, especially for complex tests?
 
 ### Step 2.4: See a Test Fail
 
@@ -252,6 +277,7 @@ export function add(a: number, b: number): number {
 ```
 
 Run the tests again and observe:
+
 - Which tests fail?
 - What information does Vitest provide about the failure?
 - How does this relate to "code that throws an error when actual doesn't match expected"?
@@ -273,12 +299,16 @@ export function slugify(text: string): string {
   return text
     .toLowerCase()
     .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
-export function truncate(text: string, maxLength: number, suffix = '...'): string {
+export function truncate(
+  text: string,
+  maxLength: number,
+  suffix = "..."
+): string {
   if (text.length <= maxLength) {
     return text;
   }
@@ -286,7 +316,7 @@ export function truncate(text: string, maxLength: number, suffix = '...'): strin
 }
 
 export function capitalize(text: string): string {
-  if (!text) return '';
+  if (!text) return "";
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 }
 
@@ -301,85 +331,85 @@ export function countWords(text: string): number {
 Create `src/utils/strings.test.ts`:
 
 ```typescript
-import { describe, it, expect } from 'vitest';
-import { slugify, truncate, capitalize, countWords } from './strings';
+import { describe, it, expect } from "vitest";
+import { slugify, truncate, capitalize, countWords } from "./strings";
 
-describe('string utilities', () => {
-  describe('slugify', () => {
-    it('converts a simple string to a slug', () => {
-      expect(slugify('Hello World')).toBe('hello-world');
+describe("string utilities", () => {
+  describe("slugify", () => {
+    it("converts a simple string to a slug", () => {
+      expect(slugify("Hello World")).toBe("hello-world");
     });
 
-    it('handles multiple spaces', () => {
-      expect(slugify('Hello    World')).toBe('hello-world');
+    it("handles multiple spaces", () => {
+      expect(slugify("Hello    World")).toBe("hello-world");
     });
 
-    it('removes special characters', () => {
-      expect(slugify('Hello, World!')).toBe('hello-world');
+    it("removes special characters", () => {
+      expect(slugify("Hello, World!")).toBe("hello-world");
     });
 
-    it('handles leading and trailing spaces', () => {
-      expect(slugify('  Hello World  ')).toBe('hello-world');
+    it("handles leading and trailing spaces", () => {
+      expect(slugify("  Hello World  ")).toBe("hello-world");
     });
 
-    it('handles already lowercase strings', () => {
-      expect(slugify('hello world')).toBe('hello-world');
-    });
-
-    // TODO: Add your own test case
-  });
-
-  describe('truncate', () => {
-    it('returns the original string if shorter than maxLength', () => {
-      expect(truncate('Hello', 10)).toBe('Hello');
-    });
-
-    it('truncates and adds default suffix', () => {
-      expect(truncate('Hello World', 8)).toBe('Hello...');
-    });
-
-    it('uses custom suffix', () => {
-      expect(truncate('Hello World', 9, '…')).toBe('Hello Wo…');
-    });
-
-    it('handles exact length strings', () => {
-      expect(truncate('Hello', 5)).toBe('Hello');
+    it("handles already lowercase strings", () => {
+      expect(slugify("hello world")).toBe("hello-world");
     });
 
     // TODO: Add your own test case
   });
 
-  describe('capitalize', () => {
-    it('capitalizes a lowercase word', () => {
-      expect(capitalize('hello')).toBe('Hello');
+  describe("truncate", () => {
+    it("returns the original string if shorter than maxLength", () => {
+      expect(truncate("Hello", 10)).toBe("Hello");
     });
 
-    it('handles already capitalized words', () => {
-      expect(capitalize('HELLO')).toBe('Hello');
+    it("truncates and adds default suffix", () => {
+      expect(truncate("Hello World", 8)).toBe("Hello...");
     });
 
-    it('returns empty string for empty input', () => {
-      expect(capitalize('')).toBe('');
+    it("uses custom suffix", () => {
+      expect(truncate("Hello World", 9, "…")).toBe("Hello Wo…");
+    });
+
+    it("handles exact length strings", () => {
+      expect(truncate("Hello", 5)).toBe("Hello");
     });
 
     // TODO: Add your own test case
   });
 
-  describe('countWords', () => {
-    it('counts words in a simple sentence', () => {
-      expect(countWords('Hello world')).toBe(2);
+  describe("capitalize", () => {
+    it("capitalizes a lowercase word", () => {
+      expect(capitalize("hello")).toBe("Hello");
     });
 
-    it('handles multiple spaces between words', () => {
-      expect(countWords('Hello    world')).toBe(2);
+    it("handles already capitalized words", () => {
+      expect(capitalize("HELLO")).toBe("Hello");
     });
 
-    it('returns zero for empty string', () => {
-      expect(countWords('')).toBe(0);
+    it("returns empty string for empty input", () => {
+      expect(capitalize("")).toBe("");
     });
 
-    it('returns zero for whitespace-only string', () => {
-      expect(countWords('   ')).toBe(0);
+    // TODO: Add your own test case
+  });
+
+  describe("countWords", () => {
+    it("counts words in a simple sentence", () => {
+      expect(countWords("Hello world")).toBe(2);
+    });
+
+    it("handles multiple spaces between words", () => {
+      expect(countWords("Hello    world")).toBe(2);
+    });
+
+    it("returns zero for empty string", () => {
+      expect(countWords("")).toBe(0);
+    });
+
+    it("returns zero for whitespace-only string", () => {
+      expect(countWords("   ")).toBe(0);
     });
 
     // TODO: Add your own test case
@@ -406,7 +436,7 @@ Now let's see the difference between unit tests and integration tests, connectin
 Create `src/services/content.ts`:
 
 ```typescript
-import { slugify, truncate, capitalize } from '../utils/strings';
+import { slugify, truncate, capitalize } from "../utils/strings";
 
 export interface Article {
   title: string;
@@ -421,24 +451,30 @@ export interface ProcessedArticle {
   author: string;
 }
 
-export function processArticle(article: Article, excerptLength = 100): ProcessedArticle {
+export function processArticle(
+  article: Article,
+  excerptLength = 100
+): ProcessedArticle {
   return {
     title: capitalize(article.title),
     slug: slugify(article.title),
     excerpt: truncate(article.body, excerptLength),
-    author: capitalize(article.author)
+    author: capitalize(article.author),
   };
 }
 
-export function processArticles(articles: Article[], excerptLength = 100): ProcessedArticle[] {
-  return articles.map(article => processArticle(article, excerptLength));
+export function processArticles(
+  articles: Article[],
+  excerptLength = 100
+): ProcessedArticle[] {
+  return articles.map((article) => processArticle(article, excerptLength));
 }
 
 export function findArticleBySlug(
   articles: ProcessedArticle[],
   slug: string
 ): ProcessedArticle | undefined {
-  return articles.find(article => article.slug === slug);
+  return articles.find((article) => article.slug === slug);
 }
 ```
 
@@ -447,76 +483,83 @@ export function findArticleBySlug(
 Create `src/services/content.test.ts`:
 
 ```typescript
-import { describe, it, expect } from 'vitest';
-import { processArticle, processArticles, findArticleBySlug, Article } from './content';
+import { describe, it, expect } from "vitest";
+import {
+  processArticle,
+  processArticles,
+  findArticleBySlug,
+  Article,
+} from "./content";
 
-describe('content service', () => {
+describe("content service", () => {
   // Sample test data
   const sampleArticle: Article = {
-    title: 'hello world: my first post',
-    body: 'This is the body of my first blog post. It contains multiple sentences and should be truncated in the excerpt.',
-    author: 'jane doe'
+    title: "hello world: my first post",
+    body: "This is the body of my first blog post. It contains multiple sentences and should be truncated in the excerpt.",
+    author: "jane doe",
   };
 
-  describe('processArticle', () => {
-    it('processes an article with all transformations', () => {
+  describe("processArticle", () => {
+    it("processes an article with all transformations", () => {
       const result = processArticle(sampleArticle, 50);
 
       // This is an INTEGRATION test - it tests multiple units working together
-      expect(result.title).toBe('Hello world: my first post');
-      expect(result.slug).toBe('hello-world-my-first-post');
-      expect(result.excerpt).toBe('This is the body of my first blog post. It co...');
-      expect(result.author).toBe('Jane doe');
+      expect(result.title).toBe("Hello world: my first post");
+      expect(result.slug).toBe("hello-world-my-first-post");
+      expect(result.excerpt).toBe(
+        "This is the body of my first blog post. It co..."
+      );
+      expect(result.author).toBe("Jane doe");
     });
 
-    it('uses default excerpt length when not specified', () => {
+    it("uses default excerpt length when not specified", () => {
       const result = processArticle(sampleArticle);
 
       expect(result.excerpt.length).toBeLessThanOrEqual(100);
     });
   });
 
-  describe('processArticles', () => {
-    it('processes multiple articles', () => {
+  describe("processArticles", () => {
+    it("processes multiple articles", () => {
       const articles: Article[] = [
         sampleArticle,
         {
-          title: 'SECOND POST',
-          body: 'Another post body here.',
-          author: 'JOHN SMITH'
-        }
+          title: "SECOND POST",
+          body: "Another post body here.",
+          author: "JOHN SMITH",
+        },
       ];
 
       const results = processArticles(articles, 50);
 
       expect(results).toHaveLength(2);
-      expect(results[0].slug).toBe('hello-world-my-first-post');
-      expect(results[1].slug).toBe('second-post');
-      expect(results[1].author).toBe('John smith');
+      expect(results[0].slug).toBe("hello-world-my-first-post");
+      expect(results[1].slug).toBe("second-post");
+      expect(results[1].author).toBe("John smith");
     });
 
-    it('returns empty array for empty input', () => {
+    it("returns empty array for empty input", () => {
       expect(processArticles([])).toEqual([]);
     });
   });
 
-  describe('findArticleBySlug', () => {
-    it('finds an article by its slug', () => {
+  describe("findArticleBySlug", () => {
+    it("finds an article by its slug", () => {
       const processed = processArticles([
         sampleArticle,
-        { title: 'Another Post', body: 'Body', author: 'Author' }
+        { title: "Another Post", body: "Body", author: "Author" },
       ]);
 
-      const found = findArticleBySlug(processed, 'hello-world-my-first-post');
+      const found = findArticleBySlug(processed, "hello-world-my-first-post");
 
       expect(found).toBeDefined();
-      expect(found?.title).toBe('Hello world: my first post');
+      expect(found?.title).toBe("Hello world: my first post");
     });
 
-    it('returns undefined when slug not found', () => {
+    it("returns undefined when slug not found", () => {
       const processed = processArticles([sampleArticle]);
 
-      const found = findArticleBySlug(processed, 'non-existent-slug');
+      const found = findArticleBySlug(processed, "non-existent-slug");
 
       expect(found).toBeUndefined();
     });
@@ -528,9 +571,9 @@ describe('content service', () => {
 
 **🤔 Reflection Questions:**
 
-1. The `strings.test.ts` file contains **unit tests** — they test individual functions in isolation. The `content.test.ts` file contains **integration tests** — they test how multiple units work together.
+1. Looking at `strings.test.ts` and `content.test.ts`, which file contains **unit tests** and which contains **integration tests**? How can you tell the difference?
 
-2. If the `slugify` function had a bug, which tests would fail? (Answer: Both the unit tests in `strings.test.ts` AND the integration tests in `content.test.ts`)
+2. If the `slugify` function had a bug, which test files would have failing tests? Why does this happen?
 
 3. What additional confidence do the integration tests give you that unit tests alone wouldn't provide?
 
@@ -542,8 +585,12 @@ describe('content service', () => {
 
 Submit your completed project as a GitHub repository containing:
 
-```
-vitest-lab/
+```text
+cse325-lab1-vitest-setup-YOURUSERNAME/
+├── .github/
+│   └── workflows/
+│       └── test.yml            ← (provided)
+├── .gitignore                  ← (provided)
 ├── src/
 │   ├── utils/
 │   │   ├── math.ts
@@ -554,45 +601,49 @@ vitest-lab/
 │       ├── content.ts
 │       └── content.test.ts
 ├── package.json
+├── package-lock.json
 ├── tsconfig.json
 ├── vitest.config.ts
-└── README.md
+└── README.md                   ← (update with your content)
 ```
 
 ### README.md Requirements
 
-Your README should include:
+The repository includes a `README.md` with these lab instructions. You can modify this file with any necessary changes to reflect your work. Please be sure to include all of the following:
 
-1. **Setup Instructions** — How to install and run the tests
-2. **Reflection Answers** — Your answers to the reflection questions throughout the lab
-3. **Additional Tests** — List the test cases you added (marked with TODO in the lab)
-4. **Testing Trophy Connection** — A brief paragraph (3-5 sentences) explaining how this lab connects to the Testing Trophy concept from your readings
+- **Name** - Your name at the top of the `README` (since GitHub usernames don't all match student names)
+- **Additional Tests** - List the test cases you added (so that it's easy to see which ones are new)
+- **Reflection Answers** - Your answers to the reflection questions (shown with a 🤔 emoji) can be added in-line next to the questions
+- **Testing Trophy Connection** - A brief paragraph (3-5 sentences) explaining how this lab connects to the Testing Trophy concept from your readings
 
 ### Test Requirements
 
 Your submission must:
 
 - Have all provided tests passing
-- Include at least **4 additional test cases** you wrote yourself (one per TODO)
+- Include at least **4 additional test cases** you wrote yourself (one per `TODO` tag)
 - Achieve at least **90% code coverage** on the utility functions
 
 ---
 
 ## Grading Rubric
 
-| Criteria | Points |
-|----------|--------|
-| Project setup correct (all config files present and valid) | 15 |
-| All provided tests pass | 20 |
-| 4+ additional test cases written | 20 |
-| Code coverage ≥ 90% on utility functions | 15 |
-| README complete with reflection answers | 20 |
-| Code quality (clean, well-organized) | 10 |
-| **Total** | **100** |
+| Criteria                                                   | Points  |
+| ---------------------------------------------------------- | ------- |
+| Project setup correct (all config files present and valid) | 15      |
+| All provided tests pass                                    | 20      |
+| 4+ additional test cases written                           | 20      |
+| Code coverage ≥ 90% on utility functions                   | 15      |
+| README complete with reflection answers                    | 20      |
+| Code quality (clean, well-organized)                       | 10      |
+| **Total**                                                  | **100** |
 
 ---
 
 ## Stretch Goals (Optional)
+
+> [!Note]
+> These additional tests are not evaluated by the GitHub Action scripts and will not be included in grading.
 
 If you finish early, try these extensions:
 
@@ -603,8 +654,8 @@ If you finish early, try these extensions:
    ```typescript
    export async function fetchArticle(id: string): Promise<Article> {
      // Simulate network delay
-     await new Promise(resolve => setTimeout(resolve, 100));
-     return { title: 'Fetched Article', body: 'Content', author: 'API' };
+     await new Promise((resolve) => setTimeout(resolve, 100));
+     return { title: "Fetched Article", body: "Content", author: "API" };
    }
    ```
 
@@ -612,9 +663,9 @@ If you finish early, try these extensions:
 
    ```typescript
    it.each([
-     ['Hello World', 'hello-world'],
-     ['foo bar baz', 'foo-bar-baz'],
-     ['Test 123', 'test-123'],
+     ["Hello World", "hello-world"],
+     ["foo bar baz", "foo-bar-baz"],
+     ["Test 123", "test-123"],
    ])('slugify("%s") returns "%s"', (input, expected) => {
      expect(slugify(input)).toBe(expected);
    });
@@ -625,14 +676,22 @@ If you finish early, try these extensions:
 ## Troubleshooting
 
 **"Cannot find module" errors:**
+
 - Ensure you have `"type": "module"` in your `package.json`
 - Check that file extensions are correct (`.ts` for TypeScript files)
 
+**"No inputs were found in config file" errors:**
+
+- Make sure `tsconfig.json` includes `"include": ["src/**/*"]`
+- Ensure you have at least one Typescirpt file in `src/`
+
 **Coverage not generating:**
+
 - Run `npm run test:coverage` (not just `npm test`)
 - Ensure `@vitest/coverage-v8` is installed
 
 **TypeScript errors:**
+
 - Make sure `tsconfig.json` includes `"types": ["vitest/globals"]`
 - Run `npx tsc --noEmit` to check for TypeScript errors
 
