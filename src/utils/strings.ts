@@ -15,6 +15,9 @@ export function truncate(
   if (text.length <= maxLength) {
     return text;
   }
+  if (maxLength <= suffix.length) {
+    return suffix;
+  }
   return text.slice(0, maxLength - suffix.length) + suffix;
 }
 

@@ -22,7 +22,7 @@ describe("content service", () => {
       expect(result.title).toBe("Hello world: my first post");
       expect(result.slug).toBe("hello-world-my-first-post");
       expect(result.excerpt).toBe(
-        "This is the body of my first blog post. It co..."
+        "This is the body of my first blog post. It cont..."
       );
       expect(result.author).toBe("Jane doe");
     });
